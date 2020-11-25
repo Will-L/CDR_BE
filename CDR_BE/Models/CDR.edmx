@@ -1,0 +1,261 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="CDRModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="CD">
+          <Key>
+            <PropertyRef Name="CDId" />
+          </Key>
+          <Property Name="CDId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CDTitle" Type="nvarchar" MaxLength="60" Nullable="false" />
+          <Property Name="CDSection" Type="nvarchar" MaxLength="60" Nullable="false" />
+          <Property Name="CDAuthor" Type="nvarchar" MaxLength="60" Nullable="false" />
+          <Property Name="CDCoordX" Type="int" Nullable="false" />
+          <Property Name="CDCoordY" Type="int" Nullable="false" />
+          <Property Name="CDBarcode" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CDDescription" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="CDStatus" Type="bit" Nullable="false" />
+          <Property Name="CDPic" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Rental">
+          <Key>
+            <PropertyRef Name="RentalId" />
+          </Key>
+          <Property Name="RentalId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="StaffId" Type="int" Nullable="false" />
+          <Property Name="DateRented" Type="datetime" Nullable="false" />
+          <Property Name="DateReturned" Type="datetime" />
+        </EntityType>
+        <EntityType Name="RentalItem">
+          <Key>
+            <PropertyRef Name="RentalItemId" />
+          </Key>
+          <Property Name="RentalItemId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RentalId" Type="int" Nullable="false" />
+          <Property Name="CDId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Staff">
+          <Key>
+            <PropertyRef Name="StaffId" />
+          </Key>
+          <Property Name="StaffId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FirstName" Type="nvarchar" MaxLength="60" />
+          <Property Name="LastName" Type="nvarchar" MaxLength="60" />
+          <Property Name="StaffHomeAddress" Type="nvarchar" MaxLength="60" />
+          <Property Name="StaffEmailAddress" Type="nvarchar" MaxLength="60" />
+          <Property Name="StaffMobileNumber" Type="nvarchar" MaxLength="60" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'CDR.dbo.CDRentalCountReport' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="CDRentalCountReport">
+          <Key>
+            <PropertyRef Name="CDId" />
+            <PropertyRef Name="CDTitle" />
+          </Key>
+          <Property Name="CDId" Type="int" Nullable="false" />
+          <Property Name="CDTitle" Type="nvarchar" MaxLength="60" Nullable="false" />
+          <Property Name="RentalCount" Type="int" />
+        </EntityType>
+        <Association Name="FK_RentalItem_Rental">
+          <End Role="Rental" Type="Self.Rental" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="RentalItem" Type="Self.RentalItem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Rental">
+              <PropertyRef Name="RentalId" />
+            </Principal>
+            <Dependent Role="RentalItem">
+              <PropertyRef Name="RentalId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="CDRModelStoreContainer">
+          <EntitySet Name="CD" EntityType="Self.CD" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Rental" EntityType="Self.Rental" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="RentalItem" EntityType="Self.RentalItem" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Staff" EntityType="Self.Staff" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CDRentalCountReport" EntityType="Self.CDRentalCountReport" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [CDRentalCountReport].[CDId] AS [CDId], 
+    [CDRentalCountReport].[CDTitle] AS [CDTitle], 
+    [CDRentalCountReport].[RentalCount] AS [RentalCount]
+    FROM [dbo].[CDRentalCountReport] AS [CDRentalCountReport]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK_RentalItem_Rental" Association="Self.FK_RentalItem_Rental">
+            <End Role="Rental" EntitySet="Rental" />
+            <End Role="RentalItem" EntitySet="RentalItem" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="CDRModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="CD">
+          <Key>
+            <PropertyRef Name="CDId" />
+          </Key>
+          <Property Name="CDId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CDTitle" Type="String" MaxLength="60" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CDSection" Type="String" MaxLength="60" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CDAuthor" Type="String" MaxLength="60" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CDCoordX" Type="Int32" Nullable="false" />
+          <Property Name="CDCoordY" Type="Int32" Nullable="false" />
+          <Property Name="CDBarcode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CDDescription" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CDStatus" Type="Boolean" Nullable="false" />
+          <Property Name="CDPic" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Rental">
+          <Key>
+            <PropertyRef Name="RentalId" />
+          </Key>
+          <Property Name="RentalId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StaffId" Type="Int32" Nullable="false" />
+          <Property Name="DateRented" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="DateReturned" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="RentalItem" Relationship="Self.FK_RentalItem_Rental" FromRole="Rental" ToRole="RentalItem" />
+        </EntityType>
+        <EntityType Name="RentalItem">
+          <Key>
+            <PropertyRef Name="RentalItemId" />
+          </Key>
+          <Property Name="RentalItemId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RentalId" Type="Int32" Nullable="false" />
+          <Property Name="CDId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Rental" Relationship="Self.FK_RentalItem_Rental" FromRole="RentalItem" ToRole="Rental" />
+        </EntityType>
+        <EntityType Name="Staff">
+          <Key>
+            <PropertyRef Name="StaffId" />
+          </Key>
+          <Property Name="StaffId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FirstName" Type="String" MaxLength="60" FixedLength="false" Unicode="true" />
+          <Property Name="LastName" Type="String" MaxLength="60" FixedLength="false" Unicode="true" />
+          <Property Name="StaffHomeAddress" Type="String" MaxLength="60" FixedLength="false" Unicode="true" />
+          <Property Name="StaffEmailAddress" Type="String" MaxLength="60" FixedLength="false" Unicode="true" />
+          <Property Name="StaffMobileNumber" Type="String" MaxLength="60" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <Association Name="FK_RentalItem_Rental">
+          <End Role="Rental" Type="Self.Rental" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="RentalItem" Type="Self.RentalItem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Rental">
+              <PropertyRef Name="RentalId" />
+            </Principal>
+            <Dependent Role="RentalItem">
+              <PropertyRef Name="RentalId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="CDREntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="CD" EntityType="Self.CD" />
+          <EntitySet Name="Rental" EntityType="Self.Rental" />
+          <EntitySet Name="RentalItem" EntityType="Self.RentalItem" />
+          <EntitySet Name="Staff" EntityType="Self.Staff" />
+          <AssociationSet Name="FK_RentalItem_Rental" Association="Self.FK_RentalItem_Rental">
+            <End Role="Rental" EntitySet="Rental" />
+            <End Role="RentalItem" EntitySet="RentalItem" />
+          </AssociationSet>
+          <EntitySet Name="CDRentalCountReport" EntityType="CDRModel.CDRentalCountReport" />
+        </EntityContainer>
+        <EntityType Name="CDRentalCountReport">
+          <Key>
+            <PropertyRef Name="CDId" />
+            <PropertyRef Name="CDTitle" />
+          </Key>
+          <Property Name="CDId" Type="Int32" Nullable="false" />
+          <Property Name="CDTitle" Type="String" Nullable="false" MaxLength="60" FixedLength="false" Unicode="true" />
+          <Property Name="RentalCount" Type="Int32" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="CDRModelStoreContainer" CdmEntityContainer="CDREntities">
+          <EntitySetMapping Name="CD">
+            <EntityTypeMapping TypeName="CDRModel.CD">
+              <MappingFragment StoreEntitySet="CD">
+                <ScalarProperty Name="CDId" ColumnName="CDId" />
+                <ScalarProperty Name="CDTitle" ColumnName="CDTitle" />
+                <ScalarProperty Name="CDSection" ColumnName="CDSection" />
+                <ScalarProperty Name="CDAuthor" ColumnName="CDAuthor" />
+                <ScalarProperty Name="CDCoordX" ColumnName="CDCoordX" />
+                <ScalarProperty Name="CDCoordY" ColumnName="CDCoordY" />
+                <ScalarProperty Name="CDBarcode" ColumnName="CDBarcode" />
+                <ScalarProperty Name="CDDescription" ColumnName="CDDescription" />
+                <ScalarProperty Name="CDStatus" ColumnName="CDStatus" />
+                <ScalarProperty Name="CDPic" ColumnName="CDPic" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Rental">
+            <EntityTypeMapping TypeName="CDRModel.Rental">
+              <MappingFragment StoreEntitySet="Rental">
+                <ScalarProperty Name="RentalId" ColumnName="RentalId" />
+                <ScalarProperty Name="StaffId" ColumnName="StaffId" />
+                <ScalarProperty Name="DateRented" ColumnName="DateRented" />
+                <ScalarProperty Name="DateReturned" ColumnName="DateReturned" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RentalItem">
+            <EntityTypeMapping TypeName="CDRModel.RentalItem">
+              <MappingFragment StoreEntitySet="RentalItem">
+                <ScalarProperty Name="RentalItemId" ColumnName="RentalItemId" />
+                <ScalarProperty Name="RentalId" ColumnName="RentalId" />
+                <ScalarProperty Name="CDId" ColumnName="CDId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Staff">
+            <EntityTypeMapping TypeName="CDRModel.Staff">
+              <MappingFragment StoreEntitySet="Staff">
+                <ScalarProperty Name="StaffId" ColumnName="StaffId" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="StaffHomeAddress" ColumnName="StaffHomeAddress" />
+                <ScalarProperty Name="StaffEmailAddress" ColumnName="StaffEmailAddress" />
+                <ScalarProperty Name="StaffMobileNumber" ColumnName="StaffMobileNumber" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CDRentalCountReport">
+            <EntityTypeMapping TypeName="CDRModel.CDRentalCountReport">
+              <MappingFragment StoreEntitySet="CDRentalCountReport">
+                <ScalarProperty Name="RentalCount" ColumnName="RentalCount" />
+                <ScalarProperty Name="CDTitle" ColumnName="CDTitle" />
+                <ScalarProperty Name="CDId" ColumnName="CDId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
